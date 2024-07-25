@@ -1,42 +1,88 @@
-import { Link } from 'react-router-dom'
-import { MdOutlineDashboardCustomize } from 'react-icons/md'
-import { IoCreateOutline } from 'react-icons/io5'
-import { CiCircleList } from 'react-icons/ci'
-import { GoSignOut } from 'react-icons/go'
-function Sidebar({sidebarhandler}) {
+import { Link, useLocation } from 'react-router-dom';
+import { MdOutlineDashboardCustomize } from 'react-icons/md';
+import { IoCreateOutline } from 'react-icons/io5';
+import { CiCircleList } from 'react-icons/ci';
+import { GoSignOut } from 'react-icons/go';
+
+function Sidebar({ sidebarhandler }) {
+  const location = useLocation();
+
+  const getLinkClass = (path) => {
+    return location.pathname === path
+      ? 'px-2 py-1 hover:px-2 hover:py-1 flex gap-2 bg-[#38C0E6] text-white rounded-lg'
+      : 'px-2 py-1 hover:px-2 hover:py-1 flex gap-2 hover:bg-[#38C0E6] hover:text-white hover:rounded-lg';
+  };
+
   return (
     <>
-      <div className=' shadow-lg h-screen '  >
-        
-        <div className='py-2 px-5' >
-          <div className='py-2 px-2 hover:bg-[#38C0E6] hover:text-white hover:rounded-lg'>
-            <Link to="/" className='flex gap-2' >
-              <button><MdOutlineDashboardCustomize size={25} /> </button>
-              <button className=' text-lg'>Dashboard</button>
+      {/* <div className='lg:block hidden shadow-lg h-full'> */}
+      <div className={`w-52 fixed  lg:block hidden  left-0 h-full shadow-lg bg-white z-50 transform transition-transform duration-500 ease-in-out ${sidebarhandler ? 'translate-x-0' : '-translate-x-full'}`}>
+
+        <div className='p-4 '>
+          <div className='py-2 px-2'>
+            <Link to="/" className={getLinkClass('/')}>
+              <button><MdOutlineDashboardCustomize size={20} /></button>
+              <button className="text-nowrap">Dashboard</button>
             </Link>
           </div>
-          <div className='py-2 px-2 hover:bg-[#38C0E6] hover:text-white hover:rounded-lg'>
-            <Link to="/create" className='flex gap-2'  >
-              <button><IoCreateOutline size={25} /></button>
-              <button className=' text-lg'> Create Project</button>
+          <div className='py-2 px-2'>
+            <Link to="/create" className={getLinkClass('/create')}>
+              <button><IoCreateOutline size={20} /></button>
+              <button className=' text-nowrap'>Create Project</button>
             </Link>
           </div>
-          <div className='py-2 px-2 hover:bg-[#38C0E6] hover:text-white hover:rounded-lg'>
-            <Link to="/projects" className='flex gap-2'  >
-              <button><CiCircleList size={25} /></button>
-              <button className=' text-lg' > Projects</button>
+          <div className='py-2 px-2'>
+            <Link to="/projects" className={getLinkClass('/projects')}>
+              <button><CiCircleList size={20} /></button>
+              <button className=' text-nowrap'>Projects</button>
             </Link>
           </div>
-          <div className='py-2 px-2 hover:bg-[#38C0E6] hover:text-white hover:rounded-lg'>
-            <Link to="/projects" className='flex gap-2'  >
-              <button><GoSignOut size={25} /></button>
-              <button className=' text-lg' > Sign Out</button>
+          <div className='py-2 px-2'>
+            <Link to="/signout" className={getLinkClass('/signout')}>
+              <button><GoSignOut size={20} /></button>
+              <button className=' text-nowrap'>Sign Out</button>
+            </Link>
+          </div>
+        </div>
+      </div>
+      {/* mobile sidebar */}
+      {/* <div className='lg:hidden shadow-lg h-full'> */}
+      <div className={`fixed lg:hidden overflow-x-hidden left-0 h-full shadow-lg bg-white z-50  transform transition-transform duration-300 ease-in-out ${!sidebarhandler ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className='p-4 '>
+          <div className='py-2 px-2'>
+            <Link to="/" className={getLinkClass('/')}>
+              <button><MdOutlineDashboardCustomize size={20} /></button>
+              <button className=' text-nowrap'>Dashboard</button>
+            </Link>
+          </div>
+          <div className='py-2 px-2'>
+            <Link to="/create" className={getLinkClass('/create')}>
+              <button><IoCreateOutline size={20} /></button>
+              <button className=' text-nowrap'>Create Project</button>
+            </Link>
+          </div>
+          <div className='py-2 px-2'>
+            <Link to="/projects" className={getLinkClass('/projects')}>
+              <button><CiCircleList size={20} /></button>
+              <button className=' text-nowrap'>Projects</button>
+            </Link>
+          </div>
+          <div className='py-2 px-2'>
+            <Link to="/signout" className={getLinkClass('/signout')}>
+              <button><GoSignOut size={20} /></button>
+              <button className=' text-nowrap'>Sign Out</button>
+            </Link>
+          </div>
+          <div className='py-2 px-2'>
+            <Link to="/signout" className={getLinkClass('/signout')}>
+              <button><GoSignOut size={20} /></button>
+              <button className=' text-nowrap'>Sign Out</button>
             </Link>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

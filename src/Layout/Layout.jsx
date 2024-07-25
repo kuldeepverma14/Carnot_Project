@@ -9,13 +9,13 @@ function Layout() {
         <>
             <div className=" ">
                 <div className="">
-                    <Topbar setSidebarHandler={setSidebarHandler} />
+                <Topbar sidebarhandler={sidebarhandler} setSidebarHandler={setSidebarHandler} />
                 </div>
-                <div className="flex flex-row">
-                    <div className="                                                                                                                                                                                                                                                                                                                                                                                        ">
+                <div className="flex ">
+                    <div className={`min-h-screen } `}>
                         <Sidebar sidebarhandler={sidebarhandler} />
                     </div>
-                    <div className="flex-1">
+                    <div className={`flex-1 w-full transition-all duration-300 ease-in-out ${sidebarhandler ? 'ml-52' : 'ml-0'}`}>
                         <Outlet />
                     </div>
                 </div>
