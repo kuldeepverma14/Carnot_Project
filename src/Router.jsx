@@ -1,14 +1,23 @@
-import { useState } from 'react'
+import { createBrowserRouter } from 'react-router-dom'
+import Dashboard from './Dashboard/Dashboard'
+import Home from './Home/Home'
+import Layout from './Layout/Layout'
+import Error from './Error'
 
 
-function Router() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      sdfg
-    </>
-  )
-}
-
-export default Router
+const router = createBrowserRouter([{
+  path: "/",
+  element: <Layout />,
+  errorElement: <Error />,
+  children: [
+    {
+      path: "/",
+      element: <Dashboard />
+    },
+    {
+      path: "/home",
+      element: <Home />
+    }
+  ]
+}])
+export default router
