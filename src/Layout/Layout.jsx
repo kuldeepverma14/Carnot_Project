@@ -1,19 +1,21 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/Topbar'
+import { useState } from 'react'
 
 function Layout() {
+    const [sidebarhandler, setSidebarHandler] = useState(true)
     return (
         <>
-            <div className="flex flex-row ">
+            <div className=" ">
                 <div className="">
-                    <Sidebar />
+                    <Topbar setSidebarHandler={setSidebarHandler} />
                 </div>
-                <div className="flex-1 bg-red-400">
-                    <div className="">
-                        <Topbar />
+                <div className="flex flex-row">
+                    <div className="                                                                                                                                                                                                                                                                                                                                                                                        ">
+                        <Sidebar sidebarhandler={sidebarhandler} />
                     </div>
-                    <div className="">
+                    <div className="flex-1">
                         <Outlet />
                     </div>
                 </div>
