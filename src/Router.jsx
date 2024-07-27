@@ -7,44 +7,34 @@ import Prjoects from './Project/Prjoects'
 import SignIn from './Auth/SIgnIn'
 import SignUp from './Auth/SignUp'
 import ProtectedRoute from './Auth/ProtectedRoute'
-//  const toke= localStorage.getItem("accessToken")
 
 const router = createBrowserRouter([{
 
-  path: "/",
-  element: <Layout />,
+  path: "/layout",
+  element: (
+    <ProtectedRoute>
+      <Layout />
+    </ProtectedRoute>),
   errorElement: <Error />,
   children: [
     {
-      path: "/",
-      element: (
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      )
+      path: "/layout/dashboard",
+      element:
+        <Dashboard />
     },
     {
-      path: "/create",
-      element: (
-        <ProtectedRoute>
-          <Create />
-        </ProtectedRoute>
-      )
+      path: "/layout/create",
+      element:
+        <Create />
     },
     {
-      path: "/projects",
-      element: (
-        <ProtectedRoute>
-          <Prjoects />
-        </ProtectedRoute>
-      )
+      path: "/layout/projects",
+      element: <Prjoects />
     }
-
-
   ]
-}, 
+},
 {
-  path: "/signin",
+  path: "/",
   element: <SignIn />
 },
 {

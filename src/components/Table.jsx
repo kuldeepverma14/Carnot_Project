@@ -1,13 +1,48 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 
+// Month mapping for sorting
+const monthMapping = {
+    Jan: 1,
+    Feb: 2,
+    Mar: 3,
+    Apr: 4,
+    May: 5,
+    Jun: 6,
+    Jul: 7,
+    Aug: 8,
+    Sep: 9,
+    Oct: 10,
+    Nov: 11,
+    Dec: 12,
+};
+
 const Table = ({ data, handleDelete }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    const filteredData = data?.filter((item) => {
-        const fields = item?.doc?.data?.value?.mapValue?.fields;
+    // Function to group data by month
+    const groupedData = data?.reduce((acc, item) => {
+        const fields = item?.doc?._document?.data?.value?.mapValue?.fields || {};
+        const month = fields?.month?.stringValue;
+
+        if (!acc[month]) {
+            acc[month] = [];
+        }
+        acc[month].push(item);
+        return acc;
+    }, {});
+
+    // Sort months based on monthMapping
+    const sortedMonths = Object.keys(groupedData).sort((a, b) => monthMapping[a] - monthMapping[b]);
+
+    // Flatten sorted data into a single array
+    const flattenedData = sortedMonths.flatMap(month => groupedData[month]);
+
+    // Filter data based on search term
+    const filteredData = flattenedData?.filter((item) => {
+        const fields = item?.doc?.data?.value?.mapValue?.fields || {};
         const searchTermLower = searchTerm?.toLowerCase();
         const projectName = fields?.projectName?.stringValue?.toLowerCase();
         const month = fields?.month?.stringValue?.toLowerCase();
@@ -50,76 +85,63 @@ const Table = ({ data, handleDelete }) => {
         return Number(value).toFixed(decimals);
     };
 
-
     const capitalizeFirstLetter = (str) => {
         if (!str) return '';
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
+
     return (
-        <div className="relative overflow-x-auto mt-5 px-5 shadow-md sm:rounded-lg">
-            <div className="py-10 bg-white">
-                {/* <label htmlFor="table-search" className="sr-only">Search</label> */}
-                <div className="relative mt-1">
-                    <input
-                        type="text"
-                        id="table-search"
-                        className="block py-2  text-sm text-black px-2 border border-gray-300 rounded-lg w-80 bg-gray-50 "
-                        placeholder="Search for Projects"
-                        value={searchTerm}
-                        onChange={handleSearch}
-                    />
-                </div>
+        <div className="relative bg-white overflow-x-auto mt-5 p-5 shadow-md sm:rounded-lg">
+            <div className="relative mt-1">
+                <input
+                    type="text"
+                    id="table-search"
+                    className="block py-2 text-sm text-black px-2 border border-gray-300 rounded-lg w-72 xsm:w-80 bg-gray-50"
+                    placeholder="Search for Projects"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                />
             </div>
-            <table className="w-full text-sm text-left rtl:text-right ">
-                <thead className="text-xs uppercase bg-gray-50 border-b dark:border-gray-700">
+            <table className="w-full text-sm text-left rtl:text-right mt-5">
+                <thead className="text-xs uppercase border-b dark:border-gray-700">
                     <tr>
-                        {/* <th></th> */}
                         <th scope="col" className="text-black text-center px-6 py-3 text-nowrap dark:hover:bg-gray-300">Sr. No.</th>
                         <th scope="col" className="text-black text-center px-6 py-3 text-nowrap dark:hover:bg-gray-300">Project name</th>
                         <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Month</th>
                         <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Year</th>
-                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Project Value</th>
-                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Direct Expense</th>
-                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Indirect Expense</th>
-                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Total Expense</th>
+                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Project Value (₹)</th>
+                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Direct Expense (₹)</th>
+                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Indirect Expense (₹)</th>
+                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Total Expense (₹)</th>
                         <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">GST(12%)</th>
-                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Grand Total Expense with GST</th>
+                        <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Grand Total Expense with GST (₹)</th>
                         <th scope="col" className="px-6 py-3 text-nowrap dark:hover:bg-gray-300 text-black text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {currentItems?.map((item, i) => {
-                        const fields = item?.doc.data.value.mapValue.fields;
-                        const projectId = item?.doc?.key?.path?.segments[6];
-                        console.log("Project ID:", projectId);
+                        const fields = item?.doc?.data?.value?.mapValue?.fields || {};
+                        const projectId = item?.doc?.key?.path?.segments[6] || 'Unknown';
 
                         return (
                             <tr key={i} className="bg-white border-b dark:hover:bg-gray-300 dark:border-gray-700 hover:bg-gray-50">
-                                {/* <td className="w-4 p-4">
-                                    <div className="flex items-center">
-                                        <input id={`checkbox-${i}`} type="checkbox" className="w-4 h-4 text-[#38C0E6] bg-gray-100 border-gray-300 rounded focus:ring-[#38C0E6] dark:focus:ring-[#38C0E6] focus:ring-2 dark:border-gray-600" />
-                                        <label htmlFor={`checkbox-${i}`} className="sr-only">checkbox</label>
-                                    </div>
-                                </td> */}
-                                <td className="text-black text-center px-6 py-4 ">{(currentPage - 1) * itemsPerPage + i + 1}</td>
-                                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-black">{capitalizeFirstLetter(fields.projectName?.stringValue)}</th>
-
-                                <td className="text-black text-center px-6 py-4 ">{fields.month.stringValue}</td>
-                                <td className="text-black text-center px-6 py-4 ">{fields.year?.integerValue || fields.year?.doubleValue}</td>
-                                <td className="text-black text-center px-6 py-4 ">{fields.projectValue?.integerValue || fields.projectValue?.doubleValue}</td>
-                                <td className="text-black text-center px-6 py-4 ">{fields.directExpense?.integerValue || fields.directExpense?.doubleValue}</td>
-                                <td className="text-black text-center px-6 py-4 ">{fields.indirectExpense?.integerValue || fields.indirectExpense?.doubleValue}</td>
-                                <td className="text-black text-center px-6 py-4 ">{fields.totalExpense?.integerValue || fields.totalExpense?.doubleValue}</td>
-                                <td className="text-black text-center px-6 py-4 ">{formatNumber(fields.gst?.integerValue || fields.gst?.doubleValue)}</td>
-                                <td className="text-black text-center px-6 py-4 ">{formatNumber(fields.grandTotal?.integerValue || fields.grandTotal?.doubleValue)}</td>
-                                <td className="text-black text-center px-6 py-4 ">
-                                    <button onClick={() => handleDelete(projectId)} className="font-medium text-red-500 dark:text-red-500 ">Delete</button>
+                                <td className="text-black text-center px-6 py-4">{(currentPage - 1) * itemsPerPage + i + 1}</td>
+                                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-center text-black">{capitalizeFirstLetter(fields?.projectName?.stringValue)}</th>
+                                <td className="text-black text-center px-6 py-4">{fields?.month?.stringValue}</td>
+                                <td className="text-black text-center px-6 py-4">{fields?.year?.integerValue || fields?.year?.doubleValue}</td>
+                                <td className="text-black text-center px-6 py-4">{fields?.projectValue?.integerValue || fields?.projectValue?.doubleValue}</td>
+                                <td className="text-black text-center px-6 py-4">{fields?.directExpense?.integerValue || fields?.directExpense?.doubleValue}</td>
+                                <td className="text-black text-center px-6 py-4">{fields?.indirectExpense?.integerValue || fields?.indirectExpense?.doubleValue}</td>
+                                <td className="text-black text-center px-6 py-4">{fields?.totalExpense?.integerValue || fields?.totalExpense?.doubleValue}</td>
+                                <td className="text-black text-center px-6 py-4">{formatNumber(fields?.gst?.integerValue || fields?.gst?.doubleValue)}</td>
+                                <td className="text-black text-center px-6 py-4">{formatNumber(fields?.grandTotal?.integerValue || fields?.grandTotal?.doubleValue)}</td>
+                                <td className="text-black text-center px-6 py-4">
+                                    <button onClick={() => handleDelete(projectId)} className="font-medium text-red-500 dark:text-red-500">Delete</button>
                                 </td>
                             </tr>
                         );
                     })}
                 </tbody>
-
             </table>
             <div className="flex justify-between items-center py-3">
                 <button

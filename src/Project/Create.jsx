@@ -68,9 +68,9 @@ const Create = () => {
 
 
   return (
-    <div className='p-8'>
+    <div className='p-5'>
       <h1 className='font-bold text-2xl' >Create Project</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-5 space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-5 shadow-md p-5 bg-white rounded-lg space-y-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div>
             <label htmlFor="projectName">Project Name:</label>
@@ -139,7 +139,7 @@ const Create = () => {
             {errors.year && <p className="text-red-500">{errors.year.message}</p>}
           </div>
           <div>
-            <label htmlFor="projectValue">Project Value:</label>
+            <label htmlFor="projectValue">Project Value(₹):</label>
             <Controller
               name="projectValue"
               control={control}
@@ -155,7 +155,7 @@ const Create = () => {
             {errors.projectValue && <p className="text-red-500">{errors.projectValue.message}</p>}
           </div>
           <div>
-            <label htmlFor="directExpense">Direct Expense:</label>
+            <label htmlFor="directExpense">Direct Expense(₹):</label>
             <Controller
               name="directExpense"
               control={control}
@@ -171,7 +171,7 @@ const Create = () => {
             {errors.directExpense && <p className="text-red-500">{errors.directExpense.message}</p>}
           </div>
           <div>
-            <label htmlFor="indirectExpense">Indirect Expense:</label>
+            <label htmlFor="indirectExpense">Indirect Expense(₹):</label>
             <Controller
               name="indirectExpense"
               control={control}
@@ -189,7 +189,7 @@ const Create = () => {
 
 
           <div>
-            <label>Total Expense:</label>
+            <label>Total Expense(₹):</label>
             <input
               type="number"
               className="w-full p-2 border rounded bg-gray-200"
@@ -207,7 +207,7 @@ const Create = () => {
             />
           </div>
           <div>
-            <label>Grand Total Expense:</label>
+            <label>Grand Total Expense(₹):</label>
             <input
               type="number"
               className="w-full p-2 border rounded bg-gray-200"
@@ -217,7 +217,6 @@ const Create = () => {
           </div>
         </div>
         <div className='flex justify-center mt-5'>
-
           <button type="submit" className="px-4  py-2 mt-4 text-white bg-[#38C0E6] rounded ">
             Submit
           </button>
